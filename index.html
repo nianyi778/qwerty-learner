@@ -25,7 +25,7 @@
       // the correct url will be waiting in the browser's history for
       // the single page app to route accordingly.
       ;(function (l) {
-        if (l.search[1] === '/') {
+        if (l.search[1] === '/' && !l.search.includes('__decoded__')) {
           var decoded = l.search
             .slice(1)
             .split('&')
@@ -33,7 +33,10 @@
               return s.replace(/~and~/g, '&')
             })
             .join('?')
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash)
+
+          // 在 URL 后加一个标记防止重复处理
+          var newUrl = l.pathname.slice(0, -1) + decoded + '&__decoded__=1' + l.hash
+          window.history.replaceState(null, null, newUrl)
         }
       })(window.location)
     </script>
